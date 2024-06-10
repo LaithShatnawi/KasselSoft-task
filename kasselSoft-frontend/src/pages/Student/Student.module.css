@@ -1,0 +1,18 @@
+.dashboardContainer {
+  min-height: 100svh;
+  font-family: "Roboto", sans-serif;
+  display: flex;
+}
+
+.charts {
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 150px;
+}
+
+.content {
+  width: calc(100% - 200px);
+  padding: 50px 100px;
+}
