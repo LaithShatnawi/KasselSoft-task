@@ -11,15 +11,48 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import SchoolIcon from "@mui/icons-material/School";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 import styles from "./Layout.module.css";
-
-const pages = ["Dashboard", "Courses"];
-const settings = ["Logout"];
+import { useContext } from "react";
+import { LoginContext } from "../context/AuthProvider";
+import { CourseContext } from "../context/CourseProvider";
 
 function Header() {
+  const { logout, user } = useContext(LoginContext);
+  const { getCourses } = useContext(CourseContext);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const student = "Student";
+  const student = user.role;
+
+  const pages =
+    user.role == "Teacher"
+      ? [
+          {
+            name: "Dashboard",
+            link: "./teacher/dashboard",
+          },
+          {
+            name: "Courses",
+            link: "./teacher/courses",
+          },
+          {
+            name: "Students",
+            link: "./teacher/students",
+          },
+        ]
+      : [
+          {
+            name: "Dashboard",
+            link: "./student/dashboard",
+          },
+          {
+            name: "Courses",
+            link: "./student/courses",
+          },
+        ];
+
+  const settings = ["Logout"];
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -38,28 +71,25 @@ function Header() {
 
   return (
     <AppBar position="static" color="secondary">
-      <Container sx={{ display: { xs: "none", md: "flex" }, margin: 0 }}>
-        <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-          <div className={styles.logoContainer}>
-            <SchoolIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/"
-              sx={{
-                mr: 2,
-                display: { xs: "none", md: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              EMS
-            </Typography>
-          </div>
+      <Container maxWidth="xxl" sx={{ margin: 0 }}>
+        <Toolbar disableGutters>
+          <SchoolIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            EMS
+          </Typography>
 
           <Box
             sx={{
@@ -97,7 +127,13 @@ function Header() {
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                  <Link
+                    to={page.link}
+                    className={styles.navLink}
+                    onClick={page.name == "Courses" ? getCourses : ""}
+                  >
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -122,6 +158,23 @@ function Header() {
             EMS
           </Typography>
 
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={handleCloseNavMenu}
+                // sx={{ my: 2, color: "white", display: "block" }}
+              >
+                <Link
+                  to={page.link}
+                  className={styles.option}
+                  onClick={getCourses}
+                >
+                  {page.name}
+                </Link>
+              </Button>
+            ))}
+          </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -146,7 +199,9 @@ function Header() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center" onClick={logout}>
+                    {setting}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>

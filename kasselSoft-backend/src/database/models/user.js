@@ -48,16 +48,34 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
-UserSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+UserSchema.methods.generateAuthToken = async function () {
+  // Populate role name
+  const userWithRole = await this.populate("role_id");
+  const roleName = userWithRole.role_id.name;
+
+  const token = jwt.sign(
+    {
+      _id: this._id,
+      role: roleName,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
   return token;
 };
 
-UserSchema.methods.generateRefreshToken = function () {
+UserSchema.methods.generateRefreshToken = async function () {
+  // Populate role name
+  const userWithRole = await this.populate("role_id");
+  const roleName = userWithRole.role_id.name;
+
   const refreshToken = jwt.sign(
-    { _id: this._id },
+    {
+      _id: this._id,
+      role: roleName,
+    },
     process.env.JWT_REFRESH_SECRET,
     {
       expiresIn: "7d",

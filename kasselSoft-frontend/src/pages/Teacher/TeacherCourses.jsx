@@ -1,19 +1,23 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import BackdropLoader from "../../components/BackdropLoader/BackdropLoader";
 import Table from "../../components/Table/Table";
 import SideNav from "../../layout/SideNav";
-import styles from "./Student.module.css";
+import styles from "./Teacher.module.css";
 import { CourseContext } from "../../context/CourseProvider";
+import ActionButton from "../../components/Button/Button";
+import PopupModal from "../../components/Modal/Modal";
+import AlertNotification from "../../components/Alert/Alert";
 
-const StudentCourses = () => {
+const TeacherCourses = () => {
   const { courses } = useContext(CourseContext);
+  const [open, setOpen] = useState(false);
 
   const rows = [];
   courses.map((course) => {
     rows.push({
       id: course._id,
       name: course.name,
-      teacher_name: course.teacher_id.full_name,
+      teacher_name: course?.teacher_id?.full_name,
       pass_mark: course.pass_mark,
       start_date: course.start_date,
       end_date: course.end_date,
@@ -38,12 +42,25 @@ const StudentCourses = () => {
     <div className={styles.dashboardContainer}>
       <SideNav />
       <div className={styles.content}>
-        <h1>Courses</h1>
+        <div className={styles.courseHeader}>
+          <h1>Courses</h1>
+          <ActionButton
+            text="Add Course"
+            variant="contained"
+            color="secondary"
+            setOpenModal={() => setOpen(true)}
+          />
+        </div>
         <Table rows={rows} columns={columns} />
       </div>
       <BackdropLoader />
+      <AlertNotification
+        severity="success"
+        text="Course has been added successfully."
+      />
+      <PopupModal setOpen={setOpen} open={open} />
     </div>
   );
 };
 
-export default StudentCourses;
+export default TeacherCourses;

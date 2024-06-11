@@ -1,9 +1,10 @@
 const Courses = require("../database/models/course");
 const Students = require("../database/models/student");
+const Teachers = require("../database/models/teacher");
 
 const getAllCourses = async (req, res) => {
   try {
-    const courses = await Courses.find().populate("teacher_id").exec();
+    const courses = await Courses.find().populate("teacher_id");
 
     res.status(200).json(courses);
   } catch (e) {
@@ -29,11 +30,15 @@ const getEnrolledCourses = async (req, res) => {
 
 const addCourse = async (req, res) => {
   try {
+    const teacher_id = await Teachers.findOne({
+      user_id: req.body.teacher_id,
+    });
+    const newBody = { ...req.body, teacher_id: teacher_id };
     const course = await Courses.findOne({ name: req.body.name });
     if (course) {
       res.status(500).send("Course is Already Created");
     } else {
-      const newCourse = new Courses(req.body);
+      const newCourse = new Courses(newBody);
       await newCourse.save();
       res.status(201).send("course added successfully");
     }

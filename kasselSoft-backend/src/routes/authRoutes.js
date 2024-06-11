@@ -15,7 +15,6 @@ const { check } = require("express-validator");
 
 authRouter.post(
   "/register",
-  acl("Student"),
   check("email")
     .isEmail()
     .withMessage("Enter a valid email address")

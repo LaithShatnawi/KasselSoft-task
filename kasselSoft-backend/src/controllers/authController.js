@@ -74,9 +74,9 @@ const registerTeacher = async (req, res) => {
   }
 };
 
-const login = (req, res) => {
+const login = async (req, res) => {
   try {
-    const token = req.user.generateAuthToken();
+    const token = await req.user.generateAuthToken();
 
     //save token in a session
     let options = {

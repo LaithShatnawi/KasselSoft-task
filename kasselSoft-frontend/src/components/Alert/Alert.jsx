@@ -1,22 +1,29 @@
 /* eslint-disable react/prop-types */
-import * as React from "react";
 import "@fontsource/roboto/500.css";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
-import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
+import { useContext } from "react";
+import { LoginContext } from "../../context/AuthProvider";
 
 export default function AlertNotification({
   severity = "info",
   text = "info",
 }) {
-  const [open, setOpen] = React.useState(true);
+  const { openAlert, setOpenAlert } = useContext(LoginContext);
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Collapse in={open}>
+    <Box
+      sx={{
+        position: "absolute",
+        left: 10,
+        top: 10,
+        width: "40%",
+      }}
+    >
+      <Collapse in={openAlert}>
         <Alert
           severity={severity}
           action={
@@ -25,7 +32,7 @@ export default function AlertNotification({
               color="inherit"
               size="small"
               onClick={() => {
-                setOpen(false);
+                setOpenAlert(false);
               }}
             >
               <CloseIcon fontSize="inherit" />
@@ -36,15 +43,6 @@ export default function AlertNotification({
           {text}
         </Alert>
       </Collapse>
-      <Button
-        disabled={open}
-        variant="outlined"
-        onClick={() => {
-          setOpen(true);
-        }}
-      >
-        Re-open
-      </Button>
     </Box>
   );
 }

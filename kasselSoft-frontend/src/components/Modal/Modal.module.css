@@ -1,0 +1,13 @@
+.btn {
+  background-color: rgb(156, 39, 176) !important;
+}
+
+.btn:hover {
+  background-color: rgb(101, 30, 114) !important;
+}
+
+.err{
+    margin: 0;
+    font-size: 12px;
+    color: red;
+}

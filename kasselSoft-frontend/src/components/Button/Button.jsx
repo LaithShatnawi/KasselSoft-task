@@ -9,10 +9,11 @@ export default function ActionButton({
   color = "primary",
   type,
   sx,
+  setOpenModal
 }) {
   return (
     <Stack direction="row" spacing={2} sx={sx}>
-      <Button variant={variant} color={color} type={type} sx={sx}>
+      <Button variant={variant} color={color} type={type} sx={sx} onClick={setOpenModal}>
         {text}
       </Button>
     </Stack>

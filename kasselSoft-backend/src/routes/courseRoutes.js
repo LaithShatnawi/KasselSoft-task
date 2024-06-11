@@ -17,7 +17,7 @@ courseRouter.get("/:studentId", bearer, getEnrolledCourses);
 courseRouter.post(
   "/add",
   bearer,
-  acl("Student"),
+  acl("Teacher"),
   check("name")
     .notEmpty()
     .withMessage("Course name is required")
@@ -36,7 +36,6 @@ courseRouter.post(
   check("start_date").notEmpty().withMessage("start date is required"),
   check("end_date").notEmpty().withMessage("end date is required"),
   validator,
-  acl("Teacher"),
   addCourse
 );
 courseRouter.post("/enroll/:courseId/:studentId", bearer, courseEnroll);

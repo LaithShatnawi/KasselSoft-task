@@ -7,8 +7,34 @@ import TextField from "@mui/material/TextField";
 import ActionButton from "../../components/Button/Button";
 import "@fontsource/roboto/500.css";
 import { Link } from "react-router-dom";
+import BackdropLoader from "../../components/BackdropLoader/BackdropLoader";
+import { useContext, useState } from "react";
+import { LoginContext } from "../../context/AuthProvider";
+import AlertNotification from "../../components/Alert/Alert";
 
 const Register = () => {
+  const { register, registerErrors } = useContext(LoginContext);
+  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(false);
+  const [user, setUser] = useState({
+    full_name: "",
+    email: "",
+    username: "",
+    password: "",
+    confirm_password: "",
+  });
+
+  const handleChange = (e) => {
+    setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (user.password == user.confirm_password) {
+      register(user);
+    } else {
+      setIsPasswordConfirmed(true);
+    }
+  };
   return (
     <div className={styles.login_container}>
       <div className={styles.left_col}>
@@ -48,52 +74,75 @@ const Register = () => {
           }}
           noValidate
           autoComplete="off"
-          // onSubmit={}
+          onSubmit={handleSubmit}
         >
           <h1 className={styles.header}>Register</h1>
           <p className={styles.subtext}>Welcome to our students portal.</p>
           <div>
             <TextField
-              error=""
+              error={registerErrors["full_name"] ? true : false}
+              type="text"
+              id="outlined-error-helper-text"
+              label="Full Name"
+              color="secondary"
+              name="full_name"
+              helperText={registerErrors["full_name"]}
+              className={styles.textField}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <TextField
+              error={registerErrors["email"] ? true : false}
               type="email"
               id="outlined-error-helper-text"
               label="Email"
               color="secondary"
-              helperText=""
+              name="email"
+              helperText={registerErrors["email"]}
               className={styles.textField}
+              onChange={handleChange}
             />
           </div>
           <div>
             <TextField
-              error=""
+              error={registerErrors["username"] ? true : false}
               type="text"
               id="outlined-error-helper-text"
               label="Username"
               color="secondary"
-              helperText=""
+              name="username"
+              helperText={registerErrors["username"]}
               className={styles.textField}
+              onChange={handleChange}
             />
           </div>
           <div>
             <TextField
-              error=""
+              error={registerErrors["password"] ? true : false}
               type="password"
               id="outlined-error-helper-text"
               label="Password"
               color="secondary"
-              helperText=""
+              name="password"
+              helperText={registerErrors["password"]}
               className={styles.textField}
+              onChange={handleChange}
             />
           </div>
           <div>
             <TextField
-              error=""
+              error={isPasswordConfirmed ? true : false}
               type="password"
               id="outlined-error-helper-text"
               label="Confirm Password"
               color="secondary"
-              helperText=""
+              name="confirm_password"
+              helperText={
+                isPasswordConfirmed ? "Your passwords do not match" : ""
+              }
               className={styles.textField}
+              onChange={handleChange}
             />
           </div>
           <ActionButton
@@ -108,6 +157,11 @@ const Register = () => {
           </p>
         </Box>
       </div>
+      <AlertNotification
+        severity="success"
+        text="Account have been created successfully"
+      />
+      <BackdropLoader />
     </div>
   );
 };
